@@ -1,4 +1,4 @@
-import prog2.edu.slu.pregroup01.Fraction.java
+import prog2.edu.slu.Fraction;
 public class MixedNumber extends Fraction {
     private int whole;
 
@@ -8,8 +8,6 @@ public class MixedNumber extends Fraction {
 
     public MixedNumber(Fraction fraction, int whole) {
         this.whole = whole;
-        setNumerator() = numerator;
-        setDenominator() = denominator;
     }
 
     public MixedNumber(int whole, int numerator, int denominator) {
