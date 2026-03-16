@@ -1,0 +1,21 @@
+# IntelliJ IDEA
+.idea/workspace.xml
+.idea/tasks.xml
+.idea/dictionaries
+.idea/vcs.xml
+.idea/shelf
+.idea/dataSources/
+.idea/sqlDataSources.xml
+.idea/dynamic.xml
+.idea/contentModel.xml
+*.iml
+/out/
+/build/
+.gradle/
+
+# General
+*.log
+*.class
+*.jar
+*.war
+*.DS_Store
