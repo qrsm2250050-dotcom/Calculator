@@ -1,4 +1,4 @@
-package prog2.edu.slu.pregroup01;
+package prog2.edu.slu;
 
 public class Fraction {
     protected int numerator;
