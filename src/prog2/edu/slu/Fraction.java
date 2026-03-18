@@ -4,92 +4,61 @@ public class Fraction {
     protected int numerator;
     protected int denominator;
 
-    public Fraction() {
-        numerator = 0;
-        denominator = 1;
-    }
-
-    public Fraction(int wholeNumVal) {
-        numerator = wholeNumVal;
-        denominator = 1;
-    }
+    public Fraction() { this(0, 1); }
+    public Fraction(int wholeNumVal) { this(wholeNumVal, 1); }
 
     public Fraction(int numerator, int denominator) {
+        if (denominator == 0) denominator = 1; // Basic safety
         this.numerator = numerator;
         this.denominator = denominator;
         simplify();
     }
 
-    public void setNumerator(int num) {
-        numerator = num;
-    }
-
-    public int getNumerator() {
-        return numerator;
-    }
-
-    public void setDenominator(int den) {
-        denominator = den;
-    }
-
-    public int getDenominator(){
-        return denominator;
-    }
-
-    public String toString() {
-        return numerator + "/" + denominator;
-    }
-
-    public double toDouble() {
-        return (double) numerator/denominator;
-    }
-
-    public Fraction add (Fraction other) {
-        int num = numerator * other.denominator + other.numerator * denominator;
-        int den = denominator * other.denominator;
-
+    // Arithmetic methods updated to return simplified Fractions
+    public Fraction add(Fraction other) {
+        int num = this.numerator * other.denominator + other.numerator * this.denominator;
+        int den = this.denominator * other.denominator;
         return new Fraction(num, den);
     }
 
     public Fraction subtract(Fraction other) {
-        int num = numerator * other.denominator - other.numerator * denominator;
-        int den = denominator * other.denominator;
-
+        int num = this.numerator * other.denominator - other.numerator * this.denominator;
+        int den = this.denominator * other.denominator;
         return new Fraction(num, den);
     }
 
-    public Fraction multiplyBy (Fraction other) {
-        int num = numerator * other.numerator;
-        int den = denominator * other.denominator;
-
-        return new Fraction (num, den);
+    public Fraction multiplyBy(Fraction other) {
+        return new Fraction(this.numerator * other.numerator, this.denominator * other.denominator);
     }
 
     public Fraction divideBy(Fraction other) {
-
-        int num = numerator * other.denominator;
-        int den = denominator * other.numerator;
-
-        return new Fraction(num, den);
+        return new Fraction(this.numerator * other.denominator, this.denominator * other.numerator);
     }
 
     private void simplify() {
-
-        int gcd = gcd(Math.abs(numerator), Math.abs(denominator));
-
-        numerator /= gcd;
-        denominator /= gcd;
+        if (numerator == 0) {
+            denominator = 1;
+            return;
+        }
+        int common = gcd(Math.abs(numerator), Math.abs(denominator));
+        numerator /= common;
+        denominator /= common;
+        if (denominator < 0) { // Keep negative sign in numerator
+            numerator = -numerator;
+            denominator = -denominator;
+        }
     }
 
     private int gcd(int a, int b) {
-
-        while (b != 0) {
-            int temp = b;
-            b = a % b;
-            a = temp;
-        }
-
-        return a;
+        return b == 0 ? a : gcd(b, a % b);
     }
 
+    public double toDouble() { return (double) numerator / denominator; }
+    public String toString() { return (denominator == 1) ? String.valueOf(numerator) : numerator + "/" + denominator; }
+
+    // Getters and Setters
+    public int getNumerator() { return numerator; }
+    public void setNumerator(int numerator) { this.numerator = numerator; simplify(); }
+    public int getDenominator() { return denominator; }
+    public void setDenominator(int denominator) { this.denominator = (denominator == 0) ? 1 : denominator; simplify(); }
 }
