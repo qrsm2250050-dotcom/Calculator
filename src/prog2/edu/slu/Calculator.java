@@ -65,7 +65,7 @@ public class Calculator extends JFrame implements ActionListener {
                 "7", "8", "9", "x",
                 "4", "5", "6", "-",
                 "1", "2", "3", "+",
-                "0", "00", "Frac (/)", "="
+                "0", "00", "x / y", "="
         };
 
         for (String label : buttonLabels) {
@@ -78,10 +78,10 @@ public class Calculator extends JFrame implements ActionListener {
                 btn.setBackground(Color.WHITE);
             } else if (label.equals("C") || label.equals("DEL")) {
                 btn.setBackground(new Color(255, 102, 102));
-                btn.setForeground(Color.WHITE);
+                btn.setForeground(Color.BLACK);
             } else if (label.equals("=")) {
                 btn.setBackground(new Color(51, 153, 255));
-                btn.setForeground(Color.WHITE);
+                btn.setForeground(Color.BLACK);
             } else {
                 btn.setBackground(Color.LIGHT_GRAY);
             }
@@ -117,7 +117,7 @@ public class Calculator extends JFrame implements ActionListener {
                     txtInput.setText(txtInput.getText() + "_");
                 }
             }
-            else if (cmd.equals("Frac (/)")) {
+            else if (cmd.equals("x / y")) {
                 if (isNewInput) { txtInput.setText("0"); isNewInput = false; }
                 if (!txtInput.getText().contains("/")) {
                     txtInput.setText(txtInput.getText() + "/");
