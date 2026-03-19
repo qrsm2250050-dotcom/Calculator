@@ -1,5 +1,7 @@
 package prog2.edu.slu;
 
+import prog2.edu.slu.pregroup01.Fraction;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;

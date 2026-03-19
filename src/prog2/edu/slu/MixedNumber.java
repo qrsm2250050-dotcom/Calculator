@@ -1,5 +1,7 @@
 package prog2.edu.slu;
 
+import prog2.edu.slu.pregroup01.Fraction;
+
 public class MixedNumber extends Fraction {
     public MixedNumber(int whole, int numerator, int denominator) {
         // Convert to improper fraction immediately for the base class
