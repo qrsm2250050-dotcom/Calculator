@@ -57,17 +57,16 @@ public class Calculator extends JFrame implements ActionListener {
 
         // --- Bottom: Numpad Grid ---
         JPanel pnlButtons = new JPanel();
-        pnlButtons.setLayout(new GridLayout(5, 4, 8, 8));
+        pnlButtons.setLayout(new GridLayout(4, 5, 8, 8));
         pnlButtons.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
         pnlButtons.setBackground(Color.DARK_GRAY);
 
         // Numpad Layout simulating a scientific calculator
         String[] buttonLabels = {
-                "C", "DEL", "Whole (_)", "÷",
-                "7", "8", "9", "x",
-                "4", "5", "6", "-",
-                "1", "2", "3", "+",
-                "0", ".", "x / y", "="
+                "7", "8", "9", "DEL", "CA",
+                "4", "5", "6", "x", "÷",
+                "1", "2", "3", "+", "-",
+                "0", ".", "x / y", "Whole (_)", "="
         };
 
         for (String label : buttonLabels) {
@@ -78,7 +77,7 @@ public class Calculator extends JFrame implements ActionListener {
             // Color coding buttons for intuitive use
             if (label.matches("[0-9]+") || label.equals(".")) {
                 btn.setBackground(Color.WHITE);
-            } else if (label.equals("C") || label.equals("DEL")) {
+            } else if (label.equals("CA") || label.equals("DEL")) {
                 btn.setBackground(new Color(255, 102, 102));
                 btn.setForeground(Color.BLACK);
             } else if (label.equals("=")) {
@@ -139,7 +138,7 @@ public class Calculator extends JFrame implements ActionListener {
 
 
             // 3. Handle Clear and Delete
-            else if (cmd.equals("C")) {
+            else if (cmd.equals("CA")) {
                 resetCalculator();
             }
             else if (cmd.equals("DEL")) {
