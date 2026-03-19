@@ -150,8 +150,10 @@ public class Calculator extends JFrame implements ActionListener {
             }
             // 4. Handle Operators
             else if (cmd.equals("+") || cmd.equals("-") || cmd.equals("x") || cmd.equals("÷")) {
+                int valid = 0;
                 if (!txtInput.getText().isEmpty() && !txtInput.getText().equals("Error")) {
                     if (op1 != null && !currentOperator.isEmpty() && !isNewInput) {
+                        valid = 1;
                         Fraction op2 = parseToFraction(txtInput.getText());
                         Fraction result = null;
                         switch (currentOperator) {
@@ -162,7 +164,7 @@ public class Calculator extends JFrame implements ActionListener {
                         }
 
                         if (result != null) {
-                            txtExpression.setText(txtExpression.getText() + " " + txtInput.getText() + " =");
+                            txtExpression.setText(txtExpression.getText() + " " + txtInput.getText() + " = " + result);
                             // Update Bottom Screen with result
                             String resultStr = result.toString();
                             // If it's a MixedNumber formatting, fix the string if needed (optional based on your MixedNumber toString implementation)
@@ -178,8 +180,15 @@ public class Calculator extends JFrame implements ActionListener {
                     }
                     op1 = parseToFraction(txtInput.getText());
                     currentOperator = cmd;
-                    txtExpression.setText(txtInput.getText() + " " + currentOperator);
-                    isNewInput = true;
+                    if (valid != 1) {
+                        txtExpression.setText(txtInput.getText() + " " + currentOperator);
+                        isNewInput = true;
+                    }
+                    else {
+                        txtExpression.setText(txtExpression.getText() + " " + currentOperator);
+                        txtInput.setText(op1 + "");
+                        isNewInput = true;
+                    }
                 }
             }
             // 5. Handle Calculation
