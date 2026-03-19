@@ -58,5 +58,6 @@ public class FractionTester {
                 System.out.println(result);
             }
         }
+        System.out.println("test");
     }
 }
