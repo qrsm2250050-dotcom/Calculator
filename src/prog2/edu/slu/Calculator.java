@@ -67,7 +67,7 @@ public class Calculator extends JFrame implements ActionListener {
                 "7", "8", "9", "x",
                 "4", "5", "6", "-",
                 "1", "2", "3", "+",
-                "0", "00", "x / y", "="
+                "0", ".", "x / y", "="
         };
 
         for (String label : buttonLabels) {
@@ -76,7 +76,7 @@ public class Calculator extends JFrame implements ActionListener {
             btn.setFocusPainted(false);
 
             // Color coding buttons for intuitive use
-            if (label.matches("[0-9]+") || label.equals("00")) {
+            if (label.matches("[0-9]+") || label.equals(".")) {
                 btn.setBackground(Color.WHITE);
             } else if (label.equals("C") || label.equals("DEL")) {
                 btn.setBackground(new Color(255, 102, 102));
@@ -101,12 +101,12 @@ public class Calculator extends JFrame implements ActionListener {
 
         try {
             // 1. Handle Numbers
-            if (cmd.matches("[0-9]+") || cmd.equals("00")) {
+            if (cmd.matches("[0-9]+")) {
                 if (isNewInput) {
                     txtInput.setText("");
                     isNewInput = false;
                 }
-                if (txtInput.getText().equals("0") && !cmd.equals("00")) {
+                if (txtInput.getText().equals("0")) {
                     txtInput.setText(cmd);
                 } else {
                     txtInput.setText(txtInput.getText() + cmd);
@@ -125,6 +125,19 @@ public class Calculator extends JFrame implements ActionListener {
                     txtInput.setText(txtInput.getText() + "/");
                 }
             }
+
+            // For decimal points
+
+            else if (cmd.equals(".")) {
+                if(isNewInput) {
+                    txtInput.setText("0.");
+                    isNewInput = false;
+                } else if (!txtInput.getText().contains(".")) {
+                    txtInput.setText(txtInput.getText() + ".");
+                }
+            }
+
+
             // 3. Handle Clear and Delete
             else if (cmd.equals("C")) {
                 resetCalculator();
@@ -223,9 +236,20 @@ public class Calculator extends JFrame implements ActionListener {
             int whole = Integer.parseInt(parts[0]);
             String[] fracParts = parts[1].split("/");
             return new MixedNumber(whole, Integer.parseInt(fracParts[0]), Integer.parseInt(fracParts[1]));
+
         } else if (input.contains("/")) { // Simple Fraction: 1/2
             String[] parts = input.split("/");
             return new Fraction(Integer.parseInt(parts[0]), Integer.parseInt(parts[1]));
+
+        } else if (input.contains(".")) { // Decimal Number
+            // Convert decimal into a fraction (1.5 -> 15/10)
+            String[] parts = input.split("\\.");
+            String whole = parts[0];
+            String fractional = parts.length > 1 ? parts[1] : "0";
+            int denominator = (int) Math.pow(10, fractional.length());
+            int numerator = Integer.parseInt(whole + fractional);
+            return new Fraction(numerator, denominator);
+
         } else { // Whole number: 5
             return new Fraction(Integer.parseInt(input), 1);
         }
