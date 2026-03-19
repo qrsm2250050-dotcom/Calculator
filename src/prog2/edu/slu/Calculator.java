@@ -139,6 +139,31 @@ public class Calculator extends JFrame implements ActionListener {
             // 4. Handle Operators
             else if (cmd.equals("+") || cmd.equals("-") || cmd.equals("x") || cmd.equals("÷")) {
                 if (!txtInput.getText().isEmpty() && !txtInput.getText().equals("Error")) {
+                    if (op1 != null && !currentOperator.isEmpty() && !isNewInput) {
+                        Fraction op2 = parseToFraction(txtInput.getText());
+                        Fraction result = null;
+                        switch (currentOperator) {
+                            case "+": result = op1.add(op2); break;
+                            case "-": result = op1.subtract(op2); break;
+                            case "x": result = op1.multiplyBy(op2); break;
+                            case "÷": result = op1.divideBy(op2); break;
+                        }
+
+                        if (result != null) {
+                            txtExpression.setText(txtExpression.getText() + " " + txtInput.getText() + " =");
+                            // Update Bottom Screen with result
+                            String resultStr = result.toString();
+                            // If it's a MixedNumber formatting, fix the string if needed (optional based on your MixedNumber toString implementation)
+                            txtInput.setText(resultStr);
+
+                            // Update Decimal label
+                            lblDoubleResult.setText("DEC: " + String.format("%.4f", result.toDouble()));
+
+                            // Prepare for chained calculations
+                            op1 = result;
+                            currentOperator = "";
+                        }
+                    }
                     op1 = parseToFraction(txtInput.getText());
                     currentOperator = cmd;
                     txtExpression.setText(txtInput.getText() + " " + currentOperator);
