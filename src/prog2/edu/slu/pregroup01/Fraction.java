@@ -4,8 +4,12 @@ public class Fraction {
     protected int numerator;
     protected int denominator;
 
-    public Fraction() { this(0, 1); }
-    public Fraction(int wholeNumVal) { this(wholeNumVal, 1); }
+    public Fraction() {
+        this(0, 1);
+    }
+    public Fraction(int wholeNumVal) {
+        this(wholeNumVal, 1);
+    }
 
     public Fraction(int numerator, int denominator) {
         if (denominator == 0) denominator = 1; // Basic safety
