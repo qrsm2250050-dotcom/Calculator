@@ -125,7 +125,7 @@ public class Calculator extends JFrame implements ActionListener {
                 }
             }
 
-            // For decimal points
+            // 3. For Decimal Points
 
             else if (cmd.equals(".")) {
                 if(isNewInput) {
@@ -137,7 +137,7 @@ public class Calculator extends JFrame implements ActionListener {
             }
 
 
-            // 3. Handle Clear and Delete
+            // 4. Handle Clear and Delete
             else if (cmd.equals("CA")) {
                 resetCalculator();
             }
@@ -148,7 +148,7 @@ public class Calculator extends JFrame implements ActionListener {
                     if (txtInput.getText().isEmpty()) txtInput.setText("0");
                 }
             }
-            // 4. Handle Operators
+            // 5. Handle Operators
             else if (cmd.equals("+") || cmd.equals("-") || cmd.equals("x") || cmd.equals("÷")) {
                 int valid = 0;
                 if (!txtInput.getText().isEmpty() && !txtInput.getText().equals("Error")) {
@@ -191,7 +191,7 @@ public class Calculator extends JFrame implements ActionListener {
                     }
                 }
             }
-            // 5. Handle Calculation
+            // 6. Handle Calculation
             else if (cmd.equals("=")) {
                 if (op1 != null && !currentOperator.isEmpty() && !isNewInput) {
                     Fraction op2 = parseToFraction(txtInput.getText());
