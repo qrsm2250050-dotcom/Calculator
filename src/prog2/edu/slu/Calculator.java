@@ -145,8 +145,18 @@ public class Calculator extends JFrame implements ActionListener {
             else if (cmd.equals("DEL")) {
                 String current = txtInput.getText();
                 if (current.length() > 0 && !isNewInput) {
-                    txtInput.setText(current.substring(0, current.length() - 1));
-                    if (txtInput.getText().isEmpty()) txtInput.setText("0");
+                    // Create a temporary string of the deleted text
+                    current = current.substring(0, current.length() - 1);
+
+                    // --- FIX #4 IS APPLIED HERE ---
+                    // Check if the remaining text is empty or just a decimal point
+                    if (current.isEmpty() || current.equals(".")) {
+                        txtInput.setText("0");
+                        isNewInput = true;
+                    } else {
+                        txtInput.setText(current);
+                    }
+                    // ------------------------------
                 }
             }
             // 5. Handle Operators
@@ -242,12 +252,23 @@ public class Calculator extends JFrame implements ActionListener {
 
         if (input.contains("_")) { // Mixed Number: 1_1/2
             String[] parts = input.split("_");
+
+            // --- FIX #3 IS ADDED HERE ---
+            if (parts.length < 2 || !parts[1].contains("/")) {
+                throw new InvalidMixedNumberException("Incomplete mixed number format");
+            }
+            // ----------------------------
+
             int whole = Integer.parseInt(parts[0]);
             String[] fracParts = parts[1].split("/");
             return new MixedNumber(whole, Integer.parseInt(fracParts[0]), Integer.parseInt(fracParts[1]));
 
         } else if (input.contains("/")) { // Simple Fraction: 1/2
             String[] parts = input.split("/");
+            // You might also want to add a similar check here just in case!
+            if (parts.length < 2) {
+                throw new Exception("Incomplete fraction format");
+            }
             return new Fraction(Integer.parseInt(parts[0]), Integer.parseInt(parts[1]));
 
         } else if (input.contains(".")) { // Decimal Number
