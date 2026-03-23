@@ -1,6 +1,7 @@
 package prog2.edu.slu;
 
 import prog2.edu.slu.pregroup01.Fraction;
+import prog2.edu.slu.pregroup01.MixedNumber;
 
 import javax.swing.*;
 import java.awt.*;

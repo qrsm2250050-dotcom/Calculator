@@ -1,6 +1,4 @@
-package prog2.edu.slu;
-
-import prog2.edu.slu.pregroup01.Fraction;
+package prog2.edu.slu.pregroup01;
 
 public class MixedNumber extends Fraction {
     public MixedNumber(int whole, int numerator, int denominator) {

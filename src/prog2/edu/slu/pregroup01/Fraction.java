@@ -12,7 +12,9 @@ public class Fraction {
     }
 
     public Fraction(int numerator, int denominator) {
-        if (denominator == 0) denominator = 1; // Basic safety
+        if (denominator == 0) {
+            throw new ArithmeticException("Division by zero");
+        }
         this.numerator = numerator;
         this.denominator = denominator;
         simplify();
