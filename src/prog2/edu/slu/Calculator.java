@@ -20,8 +20,8 @@ public class Calculator extends JFrame implements ActionListener {
     private boolean isNewInput = true;
 
     public Calculator() {
-        setTitle("2-Way Fraction Calculator");
-        setSize(380, 500);
+        setTitle("Calculator");
+        setSize(400, 500);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
 
@@ -46,8 +46,8 @@ public class Calculator extends JFrame implements ActionListener {
         lblDoubleResult = new JLabel("DEC: 0.0");
         lblDoubleResult.setFont(new Font("SansSerif", Font.PLAIN, 12));
         lblDoubleResult.setHorizontalAlignment(SwingConstants.RIGHT);
-        lblDoubleResult.setForeground(Color.GRAY);
-        lblDoubleResult.setBorder(BorderFactory.createEmptyBorder(0, 0, 5, 5));
+        lblDoubleResult.setForeground(Color.BLACK);
+        lblDoubleResult.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 
         pnlDisplay.add(txtExpression, BorderLayout.NORTH);
         pnlDisplay.add(txtInput, BorderLayout.CENTER);
