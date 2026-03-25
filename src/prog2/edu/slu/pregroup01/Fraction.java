@@ -12,13 +12,12 @@ public class Fraction {
     }
 
     public Fraction(int numerator, int denominator) {
-        if (denominator == 0) denominator = 1; // Basic safety
+        if (denominator == 0) throw new ArithmeticException("Division by zero");
         this.numerator = numerator;
         this.denominator = denominator;
         simplify();
     }
 
-    // Arithmetic methods updated to return simplified Fractions
     public Fraction add(Fraction other) {
         int num = this.numerator * other.denominator + other.numerator * this.denominator;
         int den = this.denominator * other.denominator;
@@ -47,7 +46,7 @@ public class Fraction {
         int common = gcd(Math.abs(numerator), Math.abs(denominator));
         numerator /= common;
         denominator /= common;
-        if (denominator < 0) { // Keep negative sign in numerator
+        if (denominator < 0) {
             numerator = -numerator;
             denominator = -denominator;
         }
@@ -60,9 +59,12 @@ public class Fraction {
     public double toDouble() { return (double) numerator / denominator; }
     public String toString() { return (denominator == 1) ? String.valueOf(numerator) : numerator + "/" + denominator; }
 
-    // Getters and Setters
     public int getNumerator() { return numerator; }
     public void setNumerator(int numerator) { this.numerator = numerator; simplify(); }
     public int getDenominator() { return denominator; }
-    public void setDenominator(int denominator) { this.denominator = (denominator == 0) ? 1 : denominator; simplify(); }
+    public void setDenominator(int denominator) {
+        if (denominator == 0) throw new ArithmeticException("Division by zero");
+        this.denominator = denominator;
+        simplify();
+    }
 }
