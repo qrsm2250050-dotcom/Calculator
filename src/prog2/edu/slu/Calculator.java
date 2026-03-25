@@ -6,10 +6,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.RenderingHints;
-import javax.swing.JButton;
 
 public class Calculator extends JFrame implements ActionListener {
 
@@ -22,6 +18,10 @@ public class Calculator extends JFrame implements ActionListener {
     private Fraction op1 = null;
     private String currentOperator = "";
     private boolean isNewInput = true;
+
+    // Toggle variables for S<=>D
+    private Fraction currentResult = null;
+    private boolean displayAsMixed = false;
 
     public Calculator() {
         setTitle("2-Way Fraction Calculator");
@@ -53,9 +53,23 @@ public class Calculator extends JFrame implements ActionListener {
         lblDoubleResult.setForeground(Color.GRAY);
         lblDoubleResult.setBorder(BorderFactory.createEmptyBorder(0, 0, 5, 5));
 
+        // S<=>D Button configuration
+        RoundedButton btnSD = new RoundedButton("S<=>D", 10);
+        btnSD.setFont(new Font("SansSerif", Font.BOLD, 12));
+        btnSD.setBackground(new Color(255, 204, 153)); // Distinct color
+        btnSD.setForeground(Color.BLACK);
+        btnSD.setFocusPainted(false);
+        btnSD.addActionListener(this);
+
+        // Bottom display sub-panel to hold both the DEC value and S<=>D button
+        JPanel pnlBottomDisplay = new JPanel(new BorderLayout());
+        pnlBottomDisplay.setBackground(Color.WHITE);
+        pnlBottomDisplay.add(lblDoubleResult, BorderLayout.CENTER);
+        pnlBottomDisplay.add(btnSD, BorderLayout.EAST);
+
         pnlDisplay.add(txtExpression, BorderLayout.NORTH);
         pnlDisplay.add(txtInput, BorderLayout.CENTER);
-        pnlDisplay.add(lblDoubleResult, BorderLayout.SOUTH);
+        pnlDisplay.add(pnlBottomDisplay, BorderLayout.SOUTH);
 
         add(pnlDisplay, BorderLayout.NORTH);
 
@@ -119,7 +133,6 @@ public class Calculator extends JFrame implements ActionListener {
 
             super.paintComponent(g2);
             g2.dispose();
-
         }
     }
 
@@ -133,6 +146,7 @@ public class Calculator extends JFrame implements ActionListener {
                 if (isNewInput) {
                     txtInput.setText("");
                     isNewInput = false;
+                    currentResult = null; // clear result to evaluate fresh input
                 }
                 if (txtInput.getText().equals("0")) {
                     txtInput.setText(cmd);
@@ -142,29 +156,28 @@ public class Calculator extends JFrame implements ActionListener {
             }
             // 2. Handle Fraction Formats
             else if (cmd.equals("Whole (_)")) {
-                if (isNewInput) { txtInput.setText("0"); isNewInput = false; }
+                if (isNewInput) { txtInput.setText("0"); isNewInput = false; currentResult = null; }
                 if (!txtInput.getText().contains("_")) {
                     txtInput.setText(txtInput.getText() + "_");
                 }
             }
             else if (cmd.equals("x / y")) {
-                if (isNewInput) { txtInput.setText("0"); isNewInput = false; }
+                if (isNewInput) { txtInput.setText("0"); isNewInput = false; currentResult = null; }
                 if (!txtInput.getText().contains("/")) {
                     txtInput.setText(txtInput.getText() + "/");
                 }
             }
 
             // 3. For Decimal Points
-
             else if (cmd.equals(".")) {
                 if(isNewInput) {
                     txtInput.setText("0.");
                     isNewInput = false;
+                    currentResult = null;
                 } else if (!txtInput.getText().contains(".")) {
                     txtInput.setText(txtInput.getText() + ".");
                 }
             }
-
 
             // 4. Handle Clear and Delete
             else if (cmd.equals("CA")) {
@@ -193,16 +206,13 @@ public class Calculator extends JFrame implements ActionListener {
                         }
 
                         if (result != null) {
-                            txtExpression.setText(txtExpression.getText() + " " + txtInput.getText() + " = " + result);
-                            // Update Bottom Screen with result
-                            String resultStr = result.toString();
-                            // If it's a MixedNumber formatting, fix the string if needed (optional based on your MixedNumber toString implementation)
-                            txtInput.setText(resultStr);
+                            txtExpression.setText(txtExpression.getText() + " " + txtInput.getText() + " = " + getImproperString(result));
 
-                            // Update Decimal label
-                            lblDoubleResult.setText("DEC: " + String.format("%.4f", result.toDouble()));
+                            // Update states to display standard fraction natively
+                            currentResult = result;
+                            displayAsMixed = false;
+                            updateDisplay();
 
-                            // Prepare for chained calculations
                             op1 = result;
                             currentOperator = "";
                         }
@@ -215,7 +225,7 @@ public class Calculator extends JFrame implements ActionListener {
                     }
                     else {
                         txtExpression.setText(txtExpression.getText() + " " + currentOperator);
-                        txtInput.setText(op1 + "");
+                        txtInput.setText(getImproperString(op1));
                         isNewInput = true;
                     }
                 }
@@ -238,19 +248,31 @@ public class Calculator extends JFrame implements ActionListener {
                         // Update Top Screen with full equation
                         txtExpression.setText(txtExpression.getText() + " " + txtInput.getText() + " =");
 
-                        // Update Bottom Screen with result
-                        String resultStr = result.toString();
-                        // If it's a MixedNumber formatting, fix the string if needed (optional based on your MixedNumber toString implementation)
-                        txtInput.setText(resultStr);
-
-                        // Update Decimal label
-                        lblDoubleResult.setText("DEC: " + String.format("%.4f", result.toDouble()));
+                        // Output properly as an Improper Fraction via helper
+                        currentResult = result;
+                        displayAsMixed = false;
+                        updateDisplay();
 
                         // Prepare for chained calculations
                         op1 = result;
                         currentOperator = "";
                         isNewInput = true;
                     }
+                }
+            }
+            // 7. Handle S<=>D Convert
+            else if (cmd.equals("S<=>D")) {
+                try {
+                    // If no active result, parse what the user just typed directly
+                    if (currentResult == null) {
+                        currentResult = parseToFraction(txtInput.getText());
+                    }
+                    displayAsMixed = !displayAsMixed; // Flip the state
+                    updateDisplay();
+                    isNewInput = true; // Prepare for fresh calculation after pressing
+                } catch (Exception ex) {
+                    txtInput.setText("Syntax Error");
+                    isNewInput = true;
                 }
             }
         } catch (Exception ex) {
@@ -260,10 +282,34 @@ public class Calculator extends JFrame implements ActionListener {
     }
 
     /**
+     * Extracts pure Improper String formatting safely without invoking MixNumber's overriden string.
+     */
+    private String getImproperString(Fraction f) {
+        int n = f.getNumerator();
+        int d = f.getDenominator();
+        return (d == 1) ? String.valueOf(n) : n + "/" + d;
+    }
+
+    /**
+     * Toggles between standard/improper formatting dynamically.
+     */
+    private void updateDisplay() {
+        if (currentResult == null) return;
+
+        if (displayAsMixed) {
+            txtInput.setText(new MixedNumber(currentResult).toString());
+        } else {
+            txtInput.setText(getImproperString(currentResult));
+        }
+
+        // Update Decimal label safely regardless of formatting
+        lblDoubleResult.setText("DEC: " + String.format("%.4f", currentResult.toDouble()));
+    }
+
+    /**
      * Instantiates the proper class (MixedNumber or Fraction) based on user input.
      * This fulfills the requirement to utilize the classes you created.
      */
-    // Inside Calculator.java - updated parseToFraction
     private Fraction parseToFraction(String input) throws Exception {
         input = input.trim();
         if (input.isEmpty() || input.equals("Error")) throw new Exception();
@@ -299,9 +345,11 @@ public class Calculator extends JFrame implements ActionListener {
         op1 = null;
         currentOperator = "";
         isNewInput = true;
+
+        // Reset states
+        currentResult = null;
+        displayAsMixed = false;
     }
-
-
 
     public static void main(String[] args) {
         // Sets look and feel to system default to look more like a native app
