@@ -9,8 +9,8 @@ import java.awt.event.ActionListener;
 
 public class Calculator extends JFrame implements ActionListener {
 
-    private JTextField txtExpression;
-    private JTextField txtInput;
+    private JLabel lblExpression;
+    private JLabel lblInput;
     private JLabel lblDoubleResult;
 
     private Fraction op1 = null;
@@ -19,6 +19,9 @@ public class Calculator extends JFrame implements ActionListener {
 
     private Fraction currentResult = null;
     private boolean displayAsMixed = false;
+
+    private String rawInput = "0";
+    private String rawExpression = "";
 
     public Calculator() {
         setTitle("2-Way Fraction Calculator");
@@ -30,18 +33,16 @@ public class Calculator extends JFrame implements ActionListener {
         pnlDisplay.setBackground(Color.WHITE);
         pnlDisplay.setBorder(BorderFactory.createMatteBorder(10, 10, 10, 10, Color.DARK_GRAY));
 
-        txtExpression = new JTextField("");
-        txtExpression.setEditable(false);
-        txtExpression.setFont(new Font("Monospaced", Font.PLAIN, 16));
-        txtExpression.setHorizontalAlignment(JTextField.RIGHT);
-        txtExpression.setBorder(BorderFactory.createEmptyBorder(5, 5, 0, 5));
-        txtExpression.setForeground(Color.DARK_GRAY);
+        lblExpression = new JLabel("");
+        lblExpression.setFont(new Font("SansSerif", Font.PLAIN, 16));
+        lblExpression.setHorizontalAlignment(SwingConstants.RIGHT);
+        lblExpression.setBorder(BorderFactory.createEmptyBorder(5, 5, 0, 5));
+        lblExpression.setForeground(Color.DARK_GRAY);
 
-        txtInput = new JTextField("0");
-        txtInput.setEditable(false);
-        txtInput.setFont(new Font("Monospaced", Font.BOLD, 32));
-        txtInput.setHorizontalAlignment(JTextField.RIGHT);
-        txtInput.setBorder(BorderFactory.createEmptyBorder(0, 5, 5, 5));
+        lblInput = new JLabel(toFractionHtml("0"));
+        lblInput.setFont(new Font("SansSerif", Font.BOLD, 32));
+        lblInput.setHorizontalAlignment(SwingConstants.RIGHT);
+        lblInput.setBorder(BorderFactory.createEmptyBorder(0, 5, 5, 5));
 
         lblDoubleResult = new JLabel("DEC: 0.0");
         lblDoubleResult.setFont(new Font("SansSerif", Font.PLAIN, 12));
@@ -61,8 +62,8 @@ public class Calculator extends JFrame implements ActionListener {
         pnlBottomDisplay.add(lblDoubleResult, BorderLayout.CENTER);
         pnlBottomDisplay.add(btnSD, BorderLayout.EAST);
 
-        pnlDisplay.add(txtExpression, BorderLayout.NORTH);
-        pnlDisplay.add(txtInput, BorderLayout.CENTER);
+        pnlDisplay.add(lblExpression, BorderLayout.NORTH);
+        pnlDisplay.add(lblInput, BorderLayout.CENTER);
         pnlDisplay.add(pnlBottomDisplay, BorderLayout.SOUTH);
 
         add(pnlDisplay, BorderLayout.NORTH);
@@ -127,6 +128,68 @@ public class Calculator extends JFrame implements ActionListener {
         }
     }
 
+    private void setRawInput(String val) {
+        rawInput = val;
+        lblInput.setText(toFractionHtml(val));
+    }
+
+    private void setRawExpression(String val) {
+        rawExpression = val;
+        lblExpression.setText(toExpressionHtml(val));
+    }
+
+    private String toFractionHtml(String val) {
+        if (val == null || val.isEmpty()) return "";
+        if (val.equals("Math Error") || val.equals("Syntax Error")) return val;
+
+        if (val.contains("_")) {
+            String[] parts = val.split("_");
+            String whole = parts[0];
+            String fracPart = parts.length > 1 ? parts[1] : "";
+            if (fracPart.contains("/")) {
+                String[] frac = fracPart.split("/");
+                String num = frac[0];
+                String den = frac.length > 1 ? frac[1] : "";
+                return "<html><table style='font-size:24pt; color:#000000;' cellpadding='0' cellspacing='0'><tr><td rowspan='2' valign='middle'>" + whole + "&nbsp;</td><td align='center' style='border-bottom:2px solid black;'>" + num + "</td></tr><tr><td align='center'>" + den + "</td></tr></table></html>";
+            }
+        } else if (val.contains("/")) {
+            String[] frac = val.split("/");
+            String num = frac[0];
+            String den = frac.length > 1 ? frac[1] : "";
+            return "<html><table style='font-size:24pt; color:#000000;' cellpadding='0' cellspacing='0'><tr><td align='center' style='border-bottom:2px solid black;'>" + num + "</td></tr><tr><td align='center'>" + den + "</td></tr></table></html>";
+        }
+        return "<html><span style='font-size:24pt; color:#000000;'>" + val + "</span></html>";
+    }
+
+    private String toExpressionHtml(String expr) {
+        if (expr.isEmpty()) return "";
+        String[] tokens = expr.split(" ");
+        StringBuilder html = new StringBuilder("<html><table style='font-size:16pt; color:#404040;' cellpadding='0' cellspacing='0'><tr>");
+        for (String token : tokens) {
+            if (token.matches(".*[0-9].*") && (token.contains("/") || token.contains("_"))) {
+                html.append("<td valign='middle'>");
+                if (token.contains("_")) {
+                    String[] p = token.split("_");
+                    String w = p[0];
+                    String[] f = p.length > 1 ? p[1].split("/") : new String[]{""};
+                    String n = f.length > 0 ? f[0] : "";
+                    String d = f.length > 1 ? f[1] : "";
+                    html.append("<table style='font-size:14pt; color:#404040;' cellpadding='0' cellspacing='0'><tr><td rowspan='2' valign='middle'>").append(w).append("&nbsp;</td><td align='center' style='border-bottom:1px solid #404040;'>").append(n).append("</td></tr><tr><td align='center'>").append(d).append("</td></tr></table>");
+                } else if (token.contains("/")) {
+                    String[] f = token.split("/");
+                    String n = f.length > 0 ? f[0] : "";
+                    String d = f.length > 1 ? f[1] : "";
+                    html.append("<table style='font-size:14pt; color:#404040;' cellpadding='0' cellspacing='0'><tr><td align='center' style='border-bottom:1px solid #404040;'>").append(n).append("</td></tr><tr><td align='center'>").append(d).append("</td></tr></table>");
+                }
+                html.append("</td><td valign='middle'>&nbsp;</td>");
+            } else {
+                html.append("<td valign='middle'>&nbsp;").append(token).append("&nbsp;</td>");
+            }
+        }
+        html.append("</tr></table></html>");
+        return html.toString();
+    }
+
     @Override
     public void actionPerformed(ActionEvent e) {
         String cmd = e.getActionCommand();
@@ -134,53 +197,52 @@ public class Calculator extends JFrame implements ActionListener {
         try {
             if (cmd.matches("[0-9]+")) {
                 if (isNewInput) {
-                    txtInput.setText("");
+                    setRawInput("");
                     isNewInput = false;
                     currentResult = null;
                 }
-                if (txtInput.getText().equals("0")) {
-                    txtInput.setText(cmd);
+                if (rawInput.equals("0")) {
+                    setRawInput(cmd);
                 } else {
-                    txtInput.setText(txtInput.getText() + cmd);
+                    setRawInput(rawInput + cmd);
                 }
             }
             else if (cmd.equals("Whole (_)")) {
-                if (isNewInput) { txtInput.setText("0"); isNewInput = false; currentResult = null; }
-                if (!txtInput.getText().contains("_")) {
-                    txtInput.setText(txtInput.getText() + "_");
+                if (isNewInput) { setRawInput("0"); isNewInput = false; currentResult = null; }
+                if (!rawInput.contains("_")) {
+                    setRawInput(rawInput + "_");
                 }
             }
             else if (cmd.equals("x / y")) {
-                if (isNewInput) { txtInput.setText("0"); isNewInput = false; currentResult = null; }
-                if (!txtInput.getText().contains("/")) {
-                    txtInput.setText(txtInput.getText() + "/");
+                if (isNewInput) { setRawInput("0"); isNewInput = false; currentResult = null; }
+                if (!rawInput.contains("/")) {
+                    setRawInput(rawInput + "/");
                 }
             }
             else if (cmd.equals(".")) {
                 if(isNewInput) {
-                    txtInput.setText("0.");
+                    setRawInput("0.");
                     isNewInput = false;
                     currentResult = null;
-                } else if (!txtInput.getText().contains(".")) {
-                    txtInput.setText(txtInput.getText() + ".");
+                } else if (!rawInput.contains(".")) {
+                    setRawInput(rawInput + ".");
                 }
             }
             else if (cmd.equals("CA")) {
                 resetCalculator();
             }
             else if (cmd.equals("DEL")) {
-                String current = txtInput.getText();
-                if (current.length() > 0 && !isNewInput) {
-                    txtInput.setText(current.substring(0, current.length() - 1));
-                    if (txtInput.getText().isEmpty()) txtInput.setText("0");
+                if (rawInput.length() > 0 && !isNewInput) {
+                    setRawInput(rawInput.substring(0, rawInput.length() - 1));
+                    if (rawInput.isEmpty()) setRawInput("0");
                 }
             }
             else if (cmd.equals("+") || cmd.equals("-") || cmd.equals("x") || cmd.equals("÷")) {
                 int valid = 0;
-                if (!txtInput.getText().isEmpty() && !txtInput.getText().contains("Error")) {
+                if (!rawInput.isEmpty() && !rawInput.contains("Error")) {
                     if (op1 != null && !currentOperator.isEmpty() && !isNewInput) {
                         valid = 1;
-                        Fraction op2 = parseToFraction(txtInput.getText());
+                        Fraction op2 = parseToFraction(rawInput);
                         Fraction result = null;
                         switch (currentOperator) {
                             case "+": result = op1.add(op2); break;
@@ -190,7 +252,7 @@ public class Calculator extends JFrame implements ActionListener {
                         }
 
                         if (result != null) {
-                            txtExpression.setText(txtExpression.getText() + " " + txtInput.getText() + " = " + getImproperString(result));
+                            setRawExpression(rawExpression + " " + rawInput + " = " + getImproperString(result));
 
                             currentResult = result;
                             displayAsMixed = false;
@@ -200,22 +262,22 @@ public class Calculator extends JFrame implements ActionListener {
                             currentOperator = "";
                         }
                     }
-                    op1 = parseToFraction(txtInput.getText());
+                    op1 = parseToFraction(rawInput);
                     currentOperator = cmd;
                     if (valid != 1) {
-                        txtExpression.setText(txtInput.getText() + " " + currentOperator);
+                        setRawExpression(rawInput + " " + currentOperator);
                         isNewInput = true;
                     }
                     else {
-                        txtExpression.setText(txtExpression.getText() + " " + currentOperator);
-                        txtInput.setText(getImproperString(op1));
+                        setRawExpression(rawExpression + " " + currentOperator);
+                        setRawInput(getImproperString(op1));
                         isNewInput = true;
                     }
                 }
             }
             else if (cmd.equals("=")) {
                 if (op1 != null && !currentOperator.isEmpty() && !isNewInput) {
-                    Fraction op2 = parseToFraction(txtInput.getText());
+                    Fraction op2 = parseToFraction(rawInput);
                     Fraction result = null;
 
                     switch (currentOperator) {
@@ -226,7 +288,7 @@ public class Calculator extends JFrame implements ActionListener {
                     }
 
                     if (result != null) {
-                        txtExpression.setText(txtExpression.getText() + " " + txtInput.getText() + " =");
+                        setRawExpression(rawExpression + " " + rawInput + " =");
 
                         currentResult = result;
                         displayAsMixed = false;
@@ -240,17 +302,17 @@ public class Calculator extends JFrame implements ActionListener {
             }
             else if (cmd.equals("S<=>D")) {
                 if (currentResult == null) {
-                    currentResult = parseToFraction(txtInput.getText());
+                    currentResult = parseToFraction(rawInput);
                 }
                 displayAsMixed = !displayAsMixed;
                 updateDisplay();
                 isNewInput = true;
             }
         } catch (ArithmeticException ex) {
-            txtInput.setText("Math Error");
+            setRawInput("Math Error");
             isNewInput = true;
         } catch (Exception ex) {
-            txtInput.setText("Syntax Error");
+            setRawInput("Syntax Error");
             isNewInput = true;
         }
     }
@@ -265,9 +327,9 @@ public class Calculator extends JFrame implements ActionListener {
         if (currentResult == null) return;
 
         if (displayAsMixed) {
-            txtInput.setText(new MixedNumber(currentResult).toString());
+            setRawInput(new MixedNumber(currentResult).toString());
         } else {
-            txtInput.setText(getImproperString(currentResult));
+            setRawInput(getImproperString(currentResult));
         }
 
         lblDoubleResult.setText("DEC: " + String.format("%.4f", currentResult.toDouble()));
@@ -301,8 +363,8 @@ public class Calculator extends JFrame implements ActionListener {
     }
 
     private void resetCalculator() {
-        txtInput.setText("0");
-        txtExpression.setText("");
+        setRawInput("0");
+        setRawExpression("");
         lblDoubleResult.setText("DEC: 0.0");
         op1 = null;
         currentOperator = "";
