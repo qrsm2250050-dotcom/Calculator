@@ -50,7 +50,7 @@ public class Calculator extends JFrame implements ActionListener {
         lblDoubleResult.setForeground(Color.GRAY);
         lblDoubleResult.setBorder(BorderFactory.createEmptyBorder(0, 0, 5, 5));
 
-        RoundedButton btnSD = new RoundedButton("S<=>D", 10);
+        RoundedButton btnSD = new RoundedButton("<html>a <sup>b</sup>/<sub>c</sub> &#8660; <sup>d</sup>/<sub>c</sub></html>", 10);
         btnSD.setFont(new Font("SansSerif", Font.BOLD, 12));
         btnSD.setBackground(new Color(255, 204, 153));
         btnSD.setForeground(Color.BLACK);
@@ -300,7 +300,7 @@ public class Calculator extends JFrame implements ActionListener {
                     }
                 }
             }
-            else if (cmd.equals("S<=>D")) {
+            else if (cmd.equals("<html>a <sup>b</sup>/<sub>c</sub> &#8660; <sup>d</sup>/<sub>c</sub></html>")) {
                 if (currentResult == null) {
                     currentResult = parseToFraction(rawInput);
                 }
