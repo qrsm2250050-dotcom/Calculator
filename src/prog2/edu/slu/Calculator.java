@@ -150,13 +150,13 @@ public class Calculator extends JFrame implements ActionListener {
                 String[] frac = fracPart.split("/");
                 String num = frac[0];
                 String den = frac.length > 1 ? frac[1] : "";
-                return "<html><table style='font-size:24pt; color:#000000;' cellpadding='0' cellspacing='0'><tr><td rowspan='2' valign='middle'>" + whole + "&nbsp;</td><td align='center' style='border-bottom:2px solid black;'>" + num + "</td></tr><tr><td align='center'>" + den + "</td></tr></table></html>";
+                return "<html><table style='font-size:24pt; color:#000000;' cell-padding='0' cell-spacing='0'><tr><td row-span='2' valign='middle'>" + whole + "&nbsp;</td><td align='center' style='border-bottom:2px solid black;'>" + num + "</td></tr><tr><td align='center'>" + den + "</td></tr></table></html>";
             }
         } else if (val.contains("/")) {
             String[] frac = val.split("/");
             String num = frac[0];
             String den = frac.length > 1 ? frac[1] : "";
-            return "<html><table style='font-size:24pt; color:#000000;' cellpadding='0' cellspacing='0'><tr><td align='center' style='border-bottom:2px solid black;'>" + num + "</td></tr><tr><td align='center'>" + den + "</td></tr></table></html>";
+            return "<html><table style='font-size:24pt; color:#000000;' cell-padding='0' cell-spacing='0'><tr><td align='center' style='border-bottom:2px solid black;'>" + num + "</td></tr><tr><td align='center'>" + den + "</td></tr></table></html>";
         }
         return "<html><span style='font-size:24pt; color:#000000;'>" + val + "</span></html>";
     }
@@ -164,7 +164,7 @@ public class Calculator extends JFrame implements ActionListener {
     private String toExpressionHtml(String expr) {
         if (expr.isEmpty()) return "";
         String[] tokens = expr.split(" ");
-        StringBuilder html = new StringBuilder("<html><table style='font-size:16pt; color:#404040;' cellpadding='0' cellspacing='0'><tr>");
+        StringBuilder html = new StringBuilder("<html><table style='font-size:16pt; color:#404040;' cell-padding='0' cell-spacing='0'><tr>");
         for (String token : tokens) {
             if (token.matches(".*[0-9].*") && (token.contains("/") || token.contains("_"))) {
                 html.append("<td valign='middle'>");
@@ -174,12 +174,12 @@ public class Calculator extends JFrame implements ActionListener {
                     String[] f = p.length > 1 ? p[1].split("/") : new String[]{""};
                     String n = f.length > 0 ? f[0] : "";
                     String d = f.length > 1 ? f[1] : "";
-                    html.append("<table style='font-size:14pt; color:#404040;' cell-padding='0' cell-spacing='0'><tr><td rowspan='2' valign='middle'>").append(w).append("&nbsp;</td><td align='center' style='border-bottom:1px solid #404040;'>").append(n).append("</td></tr><tr><td align='center'>").append(d).append("</td></tr></table>");
+                    html.append("<table style='font-size:14pt; color:#404040;' cell-padding='0' cell-spacing='0'><tr><td row-span='2' valign='middle'>").append(w).append("&nbsp;</td><td align='center' style='border-bottom:1px solid #404040;'>").append(n).append("</td></tr><tr><td align='center'>").append(d).append("</td></tr></table>");
                 } else if (token.contains("/")) {
                     String[] f = token.split("/");
                     String n = f.length > 0 ? f[0] : "";
                     String d = f.length > 1 ? f[1] : "";
-                    html.append("<table style='font-size:14pt; color:#404040;' cellpadding='0' cellspacing='0'><tr><td align='center' style='border-bottom:1px solid #404040;'>").append(n).append("</td></tr><tr><td align='center'>").append(d).append("</td></tr></table>");
+                    html.append("<table style='font-size:14pt; color:#404040;' cell-padding='0' cell-spacing='0'><tr><td align='center' style='border-bottom:1px solid #404040;'>").append(n).append("</td></tr><tr><td align='center'>").append(d).append("</td></tr></table>");
                 }
                 html.append("</td><td valign='middle'>&nbsp;</td>");
             } else {
