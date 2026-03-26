@@ -77,7 +77,7 @@ public class Calculator extends JFrame implements ActionListener {
                 "7", "8", "9", "DEL", "CA",
                 "4", "5", "6", "x", "÷",
                 "1", "2", "3", "+", "-",
-                "0", ".", "x / y", "Whole (_)", "="
+                "0", ".", "x / y", "A b / c", "="
         };
 
         for (String label : buttonLabels) {
@@ -207,7 +207,7 @@ public class Calculator extends JFrame implements ActionListener {
                     setRawInput(rawInput + cmd);
                 }
             }
-            else if (cmd.equals("Whole (_)")) {
+            else if (cmd.equals("A b / c")) {
                 if (isNewInput) { setRawInput("0"); isNewInput = false; currentResult = null; }
                 if (!rawInput.contains("_")) {
                     setRawInput(rawInput + "_");
