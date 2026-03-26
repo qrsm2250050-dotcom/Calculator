@@ -174,7 +174,7 @@ public class Calculator extends JFrame implements ActionListener {
                     String[] f = p.length > 1 ? p[1].split("/") : new String[]{""};
                     String n = f.length > 0 ? f[0] : "";
                     String d = f.length > 1 ? f[1] : "";
-                    html.append("<table style='font-size:14pt; color:#404040;' cellpadding='0' cellspacing='0'><tr><td rowspan='2' valign='middle'>").append(w).append("&nbsp;</td><td align='center' style='border-bottom:1px solid #404040;'>").append(n).append("</td></tr><tr><td align='center'>").append(d).append("</td></tr></table>");
+                    html.append("<table style='font-size:14pt; color:#404040;' cell-padding='0' cell-spacing='0'><tr><td rowspan='2' valign='middle'>").append(w).append("&nbsp;</td><td align='center' style='border-bottom:1px solid #404040;'>").append(n).append("</td></tr><tr><td align='center'>").append(d).append("</td></tr></table>");
                 } else if (token.contains("/")) {
                     String[] f = token.split("/");
                     String n = f.length > 0 ? f[0] : "";
