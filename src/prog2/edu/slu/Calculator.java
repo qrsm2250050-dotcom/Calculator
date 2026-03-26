@@ -6,6 +6,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.EventListener;
 
 public class Calculator extends JFrame implements ActionListener {
 
@@ -50,7 +51,7 @@ public class Calculator extends JFrame implements ActionListener {
         lblDoubleResult.setForeground(Color.GRAY);
         lblDoubleResult.setBorder(BorderFactory.createEmptyBorder(0, 0, 5, 5));
 
-        RoundedButton btnSD = new RoundedButton("S<=>D", 10);
+        RoundedButton btnSD = new RoundedButton("I<=>M", 10);
         btnSD.setFont(new Font("SansSerif", Font.BOLD, 12));
         btnSD.setBackground(new Color(255, 204, 153));
         btnSD.setForeground(Color.BLACK);
@@ -96,7 +97,6 @@ public class Calculator extends JFrame implements ActionListener {
             } else {
                 btn.setBackground(Color.LIGHT_GRAY);
             }
-
             btn.addActionListener(this);
             pnlButtons.add(btn);
         }
@@ -300,7 +300,7 @@ public class Calculator extends JFrame implements ActionListener {
                     }
                 }
             }
-            else if (cmd.equals("S<=>D")) {
+            else if (cmd.equals("I<=>M")) {
                 if (currentResult == null) {
                     currentResult = parseToFraction(rawInput);
                 }
