@@ -1,7 +1,6 @@
 package prog2.edu.slu;
 
 import prog2.edu.slu.pregroup01.Fraction;
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -119,10 +118,8 @@ public class Calculator extends JFrame implements ActionListener {
         protected void paintComponent(Graphics g) {
             Graphics2D g2 = (Graphics2D) g.create();
             g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-
             g2.setColor(getBackground());
             g2.fillRoundRect(0, 0, getWidth(), getHeight(), radius, radius);
-
             super.paintComponent(g2);
             g2.dispose();
         }
@@ -150,13 +147,13 @@ public class Calculator extends JFrame implements ActionListener {
                 String[] frac = fracPart.split("/");
                 String num = frac[0];
                 String den = frac.length > 1 ? frac[1] : "";
-                return "<html><table style='font-size:24pt; color:#000000;' cell-padding='0' cell-spacing='0'><tr><td row-span='2' valign='middle'>" + whole + "&nbsp;</td><td align='center' style='border-bottom:2px solid black;'>" + num + "</td></tr><tr><td align='center'>" + den + "</td></tr></table></html>";
+                return "<html><table style='font-size:24pt; color:#000000;' cellpadding='0' cellspacing='0'><tr><td rowspan='2' valign='middle'>" + whole + "&nbsp;</td><td align='center' style='border-bottom:2px solid black;'>" + num + "</td></tr><tr><td align='center'>" + den + "</td></tr></table></html>";
             }
         } else if (val.contains("/")) {
             String[] frac = val.split("/");
             String num = frac[0];
             String den = frac.length > 1 ? frac[1] : "";
-            return "<html><table style='font-size:24pt; color:#000000;' cell-padding='0' cell-spacing='0'><tr><td align='center' style='border-bottom:2px solid black;'>" + num + "</td></tr><tr><td align='center'>" + den + "</td></tr></table></html>";
+            return "<html><table style='font-size:24pt; color:#000000;' cellpadding='0' cellspacing='0'><tr><td align='center' style='border-bottom:2px solid black;'>" + num + "</td></tr><tr><td align='center'>" + den + "</td></tr></table></html>";
         }
         return "<html><span style='font-size:24pt; color:#000000;'>" + val + "</span></html>";
     }
@@ -164,7 +161,7 @@ public class Calculator extends JFrame implements ActionListener {
     private String toExpressionHtml(String expr) {
         if (expr.isEmpty()) return "";
         String[] tokens = expr.split(" ");
-        StringBuilder html = new StringBuilder("<html><table style='font-size:16pt; color:#404040;' cell-padding='0' cell-spacing='0'><tr>");
+        StringBuilder html = new StringBuilder("<html><table style='font-size:16pt; color:#404040;' cellpadding='0' cellspacing='0'><tr>");
         for (String token : tokens) {
             if (token.matches(".*[0-9].*") && (token.contains("/") || token.contains("_"))) {
                 html.append("<td valign='middle'>");
@@ -174,12 +171,12 @@ public class Calculator extends JFrame implements ActionListener {
                     String[] f = p.length > 1 ? p[1].split("/") : new String[]{""};
                     String n = f.length > 0 ? f[0] : "";
                     String d = f.length > 1 ? f[1] : "";
-                    html.append("<table style='font-size:14pt; color:#404040;' cell-padding='0' cell-spacing='0'><tr><td row-span='2' valign='middle'>").append(w).append("&nbsp;</td><td align='center' style='border-bottom:1px solid #404040;'>").append(n).append("</td></tr><tr><td align='center'>").append(d).append("</td></tr></table>");
+                    html.append("<table style='font-size:14pt; color:#404040;' cellpadding='0' cellspacing='0'><tr><td rowspan='2' valign='middle'>").append(w).append("&nbsp;</td><td align='center' style='border-bottom:1px solid #404040;'>").append(n).append("</td></tr><tr><td align='center'>").append(d).append("</td></tr></table>");
                 } else if (token.contains("/")) {
                     String[] f = token.split("/");
                     String n = f.length > 0 ? f[0] : "";
                     String d = f.length > 1 ? f[1] : "";
-                    html.append("<table style='font-size:14pt; color:#404040;' cell-padding='0' cell-spacing='0'><tr><td align='center' style='border-bottom:1px solid #404040;'>").append(n).append("</td></tr><tr><td align='center'>").append(d).append("</td></tr></table>");
+                    html.append("<table style='font-size:14pt; color:#404040;' cellpadding='0' cellspacing='0'><tr><td align='center' style='border-bottom:1px solid #404040;'>").append(n).append("</td></tr><tr><td align='center'>").append(d).append("</td></tr></table>");
                 }
                 html.append("</td><td valign='middle'>&nbsp;</td>");
             } else {
@@ -199,31 +196,22 @@ public class Calculator extends JFrame implements ActionListener {
                 if (isNewInput) {
                     setRawInput("");
                     isNewInput = false;
-                    currentResult = null;
                 }
-                if (rawInput.equals("0")) {
-                    setRawInput(cmd);
-                } else {
-                    setRawInput(rawInput + cmd);
-                }
+                if (rawInput.equals("0")) setRawInput(cmd);
+                else setRawInput(rawInput + cmd);
             }
             else if (cmd.equals("Whole (_)")) {
-                if (isNewInput) { setRawInput("0"); isNewInput = false; currentResult = null; }
-                if (!rawInput.contains("_")) {
-                    setRawInput(rawInput + "_");
-                }
+                if (isNewInput) { setRawInput("0"); isNewInput = false; }
+                if (!rawInput.contains("_")) setRawInput(rawInput + "_");
             }
             else if (cmd.equals("x / y")) {
-                if (isNewInput) { setRawInput("0"); isNewInput = false; currentResult = null; }
-                if (!rawInput.contains("/")) {
-                    setRawInput(rawInput + "/");
-                }
+                if (isNewInput) { setRawInput("0"); isNewInput = false; }
+                if (!rawInput.contains("/")) setRawInput(rawInput + "/");
             }
             else if (cmd.equals(".")) {
                 if(isNewInput) {
                     setRawInput("0.");
                     isNewInput = false;
-                    currentResult = null;
                 } else if (!rawInput.contains(".")) {
                     setRawInput(rawInput + ".");
                 }
@@ -238,75 +226,31 @@ public class Calculator extends JFrame implements ActionListener {
                 }
             }
             else if (cmd.equals("+") || cmd.equals("-") || cmd.equals("x") || cmd.equals("÷")) {
-                int valid = 0;
                 if (!rawInput.isEmpty() && !rawInput.contains("Error")) {
                     if (op1 != null && !currentOperator.isEmpty() && !isNewInput) {
-                        valid = 1;
-                        Fraction op2 = parseToFraction(rawInput);
-                        Fraction result = null;
-                        switch (currentOperator) {
-                            case "+": result = op1.add(op2); break;
-                            case "-": result = op1.subtract(op2); break;
-                            case "x": result = op1.multiplyBy(op2); break;
-                            case "÷": result = op1.divideBy(op2); break;
-                        }
-
-                        if (result != null) {
-                            setRawExpression(rawExpression + " " + rawInput + " = " + getImproperString(result));
-
-                            currentResult = result;
-                            displayAsMixed = false;
-                            updateDisplay();
-
-                            op1 = result;
-                            currentOperator = "";
-                        }
+                        calculateResult();
                     }
                     op1 = parseToFraction(rawInput);
                     currentOperator = cmd;
-                    if (valid != 1) {
-                        setRawExpression(rawInput + " " + currentOperator);
-                        isNewInput = true;
-                    }
-                    else {
-                        setRawExpression(rawExpression + " " + currentOperator);
-                        setRawInput(getImproperString(op1));
-                        isNewInput = true;
-                    }
+                    setRawExpression(getImproperString(op1) + " " + currentOperator);
+                    isNewInput = true;
                 }
             }
             else if (cmd.equals("=")) {
                 if (op1 != null && !currentOperator.isEmpty() && !isNewInput) {
-                    Fraction op2 = parseToFraction(rawInput);
-                    Fraction result = null;
-
-                    switch (currentOperator) {
-                        case "+": result = op1.add(op2); break;
-                        case "-": result = op1.subtract(op2); break;
-                        case "x": result = op1.multiplyBy(op2); break;
-                        case "÷": result = op1.divideBy(op2); break;
-                    }
-
-                    if (result != null) {
-                        setRawExpression(rawExpression + " " + rawInput + " =");
-
-                        currentResult = result;
-                        displayAsMixed = false;
-                        updateDisplay();
-
-                        op1 = result;
-                        currentOperator = "";
-                        isNewInput = true;
-                    }
+                    calculateResult();
+                    setRawExpression("");
+                    op1 = null;
+                    currentOperator = "";
+                    isNewInput = true;
                 }
             }
             else if (cmd.equals("<html>a <sup>b</sup>/<sub>c</sub> &#8660; <sup>d</sup>/<sub>c</sub></html>")) {
-                if (currentResult == null) {
-                    currentResult = parseToFraction(rawInput);
+                if (currentResult != null || !rawInput.contains("Error")) {
+                    if (currentResult == null) currentResult = parseToFraction(rawInput);
+                    displayAsMixed = !displayAsMixed;
+                    updateDisplay();
                 }
-                displayAsMixed = !displayAsMixed;
-                updateDisplay();
-                isNewInput = true;
             }
         } catch (ArithmeticException ex) {
             setRawInput("Math Error");
@@ -314,6 +258,21 @@ public class Calculator extends JFrame implements ActionListener {
         } catch (Exception ex) {
             setRawInput("Syntax Error");
             isNewInput = true;
+        }
+    }
+
+    private void calculateResult() throws Exception {
+        Fraction op2 = parseToFraction(rawInput);
+        Fraction result = null;
+        switch (currentOperator) {
+            case "+": result = op1.add(op2); break;
+            case "-": result = op1.subtract(op2); break;
+            case "x": result = op1.multiplyBy(op2); break;
+            case "÷": result = op1.divideBy(op2); break;
+        }
+        if (result != null) {
+            currentResult = result;
+            updateDisplay();
         }
     }
 
@@ -325,38 +284,35 @@ public class Calculator extends JFrame implements ActionListener {
 
     private void updateDisplay() {
         if (currentResult == null) return;
-
-        if (displayAsMixed) {
-            setRawInput(new MixedNumber(currentResult).toString());
-        } else {
-            setRawInput(getImproperString(currentResult));
-        }
-
+        if (displayAsMixed) setRawInput(new MixedNumber(currentResult).toString());
+        else setRawInput(getImproperString(currentResult));
         lblDoubleResult.setText("DEC: " + String.format("%.4f", currentResult.toDouble()));
     }
 
     private Fraction parseToFraction(String input) throws Exception {
         input = input.trim();
         if (input.isEmpty() || input.contains("Error")) throw new Exception();
+        if (input.endsWith("_") || input.endsWith("/")) input = input.substring(0, input.length()-1);
 
         if (input.contains("_")) {
             String[] parts = input.split("_");
             int whole = Integer.parseInt(parts[0]);
             String[] fracParts = parts[1].split("/");
-            return new MixedNumber(whole, Integer.parseInt(fracParts[0]), Integer.parseInt(fracParts[1]));
-
+            int num = Integer.parseInt(fracParts[0]);
+            int den = (fracParts.length > 1) ? Integer.parseInt(fracParts[1]) : 1;
+            return new MixedNumber(whole, num, den);
         } else if (input.contains("/")) {
             String[] parts = input.split("/");
-            return new Fraction(Integer.parseInt(parts[0]), Integer.parseInt(parts[1]));
-
+            int den = (parts.length > 1) ? Integer.parseInt(parts[1]) : 1;
+            return new Fraction(Integer.parseInt(parts[0]), den);
         } else if (input.contains(".")) {
-            String[] parts = input.split("\\.");
-            String whole = parts[0];
-            String fractional = parts.length > 1 ? parts[1] : "0";
-            int denominator = (int) Math.pow(10, fractional.length());
-            int numerator = Integer.parseInt(whole + fractional);
-            return new Fraction(numerator, denominator);
-
+            int dotIndex = input.indexOf(".");
+            String wholePart = input.substring(0, dotIndex);
+            String fracPart = input.substring(dotIndex + 1);
+            if (fracPart.isEmpty()) fracPart = "0";
+            int den = (int) Math.pow(10, fracPart.length());
+            long num = Long.parseLong(wholePart) * den + (wholePart.startsWith("-") ? -1 : 1) * Long.parseLong(fracPart);
+            return new Fraction((int)num, den);
         } else {
             return new Fraction(Integer.parseInt(input), 1);
         }
@@ -368,16 +324,14 @@ public class Calculator extends JFrame implements ActionListener {
         lblDoubleResult.setText("DEC: 0.0");
         op1 = null;
         currentOperator = "";
-        isNewInput = true;
-
         currentResult = null;
+        isNewInput = true;
         displayAsMixed = false;
     }
 
     public static void main(String[] args) {
         try { UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName()); }
-        catch (Exception e) {  }
-
+        catch (Exception e) { }
         SwingUtilities.invokeLater(() -> {
             Calculator calc = new Calculator();
             calc.setLocationRelativeTo(null);

@@ -7,6 +7,7 @@ public class Fraction {
     public Fraction() {
         this(0, 1);
     }
+
     public Fraction(int wholeNumVal) {
         this(wholeNumVal, 1);
     }
@@ -57,7 +58,11 @@ public class Fraction {
     }
 
     public double toDouble() { return (double) numerator / denominator; }
-    public String toString() { return (denominator == 1) ? String.valueOf(numerator) : numerator + "/" + denominator; }
+
+    @Override
+    public String toString() {
+        return (denominator == 1) ? String.valueOf(numerator) : numerator + "/" + denominator;
+    }
 
     public int getNumerator() { return numerator; }
     public void setNumerator(int numerator) { this.numerator = numerator; simplify(); }
