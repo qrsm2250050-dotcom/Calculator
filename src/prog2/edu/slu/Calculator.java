@@ -1,7 +1,6 @@
 package prog2.edu.slu;
 
 import prog2.edu.slu.pregroup01.Fraction;
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -51,7 +50,7 @@ public class Calculator extends JFrame implements ActionListener {
         lblDoubleResult.setForeground(Color.GRAY);
         lblDoubleResult.setBorder(BorderFactory.createEmptyBorder(0, 0, 5, 5));
 
-        RoundedButton btnSD = new RoundedButton("I<=>M", 10);
+        RoundedButton btnSD = new RoundedButton("<html>a <sup>b</sup>/<sub>c</sub> &#8660; <sup>d</sup>/<sub>c</sub></html>", 10);
         btnSD.setFont(new Font("SansSerif", Font.BOLD, 12));
         btnSD.setBackground(new Color(255, 204, 153));
         btnSD.setForeground(Color.BLACK);
@@ -119,10 +118,8 @@ public class Calculator extends JFrame implements ActionListener {
         protected void paintComponent(Graphics g) {
             Graphics2D g2 = (Graphics2D) g.create();
             g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-
             g2.setColor(getBackground());
             g2.fillRoundRect(0, 0, getWidth(), getHeight(), radius, radius);
-
             super.paintComponent(g2);
             g2.dispose();
         }
@@ -199,31 +196,22 @@ public class Calculator extends JFrame implements ActionListener {
                 if (isNewInput) {
                     setRawInput("");
                     isNewInput = false;
-                    currentResult = null;
                 }
-                if (rawInput.equals("0")) {
-                    setRawInput(cmd);
-                } else {
-                    setRawInput(rawInput + cmd);
-                }
+                if (rawInput.equals("0")) setRawInput(cmd);
+                else setRawInput(rawInput + cmd);
             }
-            else if (cmd.equals("A b / c")) {
-                if (isNewInput) { setRawInput("0"); isNewInput = false; currentResult = null; }
-                if (!rawInput.contains("_")) {
-                    setRawInput(rawInput + "_");
-                }
+            else if (cmd.equals("Whole (_)")) {
+                if (isNewInput) { setRawInput("0"); isNewInput = false; }
+                if (!rawInput.contains("_")) setRawInput(rawInput + "_");
             }
             else if (cmd.equals("x / y")) {
-                if (isNewInput) { setRawInput("0"); isNewInput = false; currentResult = null; }
-                if (!rawInput.contains("/")) {
-                    setRawInput(rawInput + "/");
-                }
+                if (isNewInput) { setRawInput("0"); isNewInput = false; }
+                if (!rawInput.contains("/")) setRawInput(rawInput + "/");
             }
             else if (cmd.equals(".")) {
                 if(isNewInput) {
                     setRawInput("0.");
                     isNewInput = false;
-                    currentResult = null;
                 } else if (!rawInput.contains(".")) {
                     setRawInput(rawInput + ".");
                 }
@@ -238,75 +226,31 @@ public class Calculator extends JFrame implements ActionListener {
                 }
             }
             else if (cmd.equals("+") || cmd.equals("-") || cmd.equals("x") || cmd.equals("÷")) {
-                int valid = 0;
                 if (!rawInput.isEmpty() && !rawInput.contains("Error")) {
                     if (op1 != null && !currentOperator.isEmpty() && !isNewInput) {
-                        valid = 1;
-                        Fraction op2 = parseToFraction(rawInput);
-                        Fraction result = null;
-                        switch (currentOperator) {
-                            case "+": result = op1.add(op2); break;
-                            case "-": result = op1.subtract(op2); break;
-                            case "x": result = op1.multiplyBy(op2); break;
-                            case "÷": result = op1.divideBy(op2); break;
-                        }
-
-                        if (result != null) {
-                            setRawExpression(rawExpression + " " + rawInput + " = " + getImproperString(result));
-
-                            currentResult = result;
-                            displayAsMixed = false;
-                            updateDisplay();
-
-                            op1 = result;
-                            currentOperator = "";
-                        }
+                        calculateResult();
                     }
                     op1 = parseToFraction(rawInput);
                     currentOperator = cmd;
-                    if (valid != 1) {
-                        setRawExpression(rawInput + " " + currentOperator);
-                        isNewInput = true;
-                    }
-                    else {
-                        setRawExpression(rawExpression + " " + currentOperator);
-                        setRawInput(getImproperString(op1));
-                        isNewInput = true;
-                    }
+                    setRawExpression(getImproperString(op1) + " " + currentOperator);
+                    isNewInput = true;
                 }
             }
             else if (cmd.equals("=")) {
                 if (op1 != null && !currentOperator.isEmpty() && !isNewInput) {
-                    Fraction op2 = parseToFraction(rawInput);
-                    Fraction result = null;
-
-                    switch (currentOperator) {
-                        case "+": result = op1.add(op2); break;
-                        case "-": result = op1.subtract(op2); break;
-                        case "x": result = op1.multiplyBy(op2); break;
-                        case "÷": result = op1.divideBy(op2); break;
-                    }
-
-                    if (result != null) {
-                        setRawExpression(rawExpression + " " + rawInput + " =");
-
-                        currentResult = result;
-                        displayAsMixed = false;
-                        updateDisplay();
-
-                        op1 = result;
-                        currentOperator = "";
-                        isNewInput = true;
-                    }
+                    calculateResult();
+                    setRawExpression("");
+                    op1 = null;
+                    currentOperator = "";
+                    isNewInput = true;
                 }
             }
-            else if (cmd.equals("I<=>M")) {
-                if (currentResult == null) {
-                    currentResult = parseToFraction(rawInput);
+            else if (cmd.equals("<html>a <sup>b</sup>/<sub>c</sub> &#8660; <sup>d</sup>/<sub>c</sub></html>")) {
+                if (currentResult != null || !rawInput.contains("Error")) {
+                    if (currentResult == null) currentResult = parseToFraction(rawInput);
+                    displayAsMixed = !displayAsMixed;
+                    updateDisplay();
                 }
-                displayAsMixed = !displayAsMixed;
-                updateDisplay();
-                isNewInput = true;
             }
         } catch (ArithmeticException ex) {
             setRawInput("Math Error");
@@ -314,6 +258,21 @@ public class Calculator extends JFrame implements ActionListener {
         } catch (Exception ex) {
             setRawInput("Syntax Error");
             isNewInput = true;
+        }
+    }
+
+    private void calculateResult() throws Exception {
+        Fraction op2 = parseToFraction(rawInput);
+        Fraction result = null;
+        switch (currentOperator) {
+            case "+": result = op1.add(op2); break;
+            case "-": result = op1.subtract(op2); break;
+            case "x": result = op1.multiplyBy(op2); break;
+            case "÷": result = op1.divideBy(op2); break;
+        }
+        if (result != null) {
+            currentResult = result;
+            updateDisplay();
         }
     }
 
@@ -325,38 +284,35 @@ public class Calculator extends JFrame implements ActionListener {
 
     private void updateDisplay() {
         if (currentResult == null) return;
-
-        if (displayAsMixed) {
-            setRawInput(new MixedNumber(currentResult).toString());
-        } else {
-            setRawInput(getImproperString(currentResult));
-        }
-
+        if (displayAsMixed) setRawInput(new MixedNumber(currentResult).toString());
+        else setRawInput(getImproperString(currentResult));
         lblDoubleResult.setText("DEC: " + String.format("%.4f", currentResult.toDouble()));
     }
 
     private Fraction parseToFraction(String input) throws Exception {
         input = input.trim();
         if (input.isEmpty() || input.contains("Error")) throw new Exception();
+        if (input.endsWith("_") || input.endsWith("/")) input = input.substring(0, input.length()-1);
 
         if (input.contains("_")) {
             String[] parts = input.split("_");
             int whole = Integer.parseInt(parts[0]);
             String[] fracParts = parts[1].split("/");
-            return new MixedNumber(whole, Integer.parseInt(fracParts[0]), Integer.parseInt(fracParts[1]));
-
+            int num = Integer.parseInt(fracParts[0]);
+            int den = (fracParts.length > 1) ? Integer.parseInt(fracParts[1]) : 1;
+            return new MixedNumber(whole, num, den);
         } else if (input.contains("/")) {
             String[] parts = input.split("/");
-            return new Fraction(Integer.parseInt(parts[0]), Integer.parseInt(parts[1]));
-
+            int den = (parts.length > 1) ? Integer.parseInt(parts[1]) : 1;
+            return new Fraction(Integer.parseInt(parts[0]), den);
         } else if (input.contains(".")) {
-            String[] parts = input.split("\\.");
-            String whole = parts[0];
-            String fractional = parts.length > 1 ? parts[1] : "0";
-            int denominator = (int) Math.pow(10, fractional.length());
-            int numerator = Integer.parseInt(whole + fractional);
-            return new Fraction(numerator, denominator);
-
+            int dotIndex = input.indexOf(".");
+            String wholePart = input.substring(0, dotIndex);
+            String fracPart = input.substring(dotIndex + 1);
+            if (fracPart.isEmpty()) fracPart = "0";
+            int den = (int) Math.pow(10, fracPart.length());
+            long num = Long.parseLong(wholePart) * den + (wholePart.startsWith("-") ? -1 : 1) * Long.parseLong(fracPart);
+            return new Fraction((int)num, den);
         } else {
             return new Fraction(Integer.parseInt(input), 1);
         }
@@ -368,16 +324,14 @@ public class Calculator extends JFrame implements ActionListener {
         lblDoubleResult.setText("DEC: 0.0");
         op1 = null;
         currentOperator = "";
-        isNewInput = true;
-
         currentResult = null;
+        isNewInput = true;
         displayAsMixed = false;
     }
 
     public static void main(String[] args) {
         try { UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName()); }
-        catch (Exception e) {  }
-
+        catch (Exception e) { }
         SwingUtilities.invokeLater(() -> {
             Calculator calc = new Calculator();
             calc.setLocationRelativeTo(null);

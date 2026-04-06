@@ -4,7 +4,6 @@ import prog2.edu.slu.pregroup01.Fraction;
 
 public class MixedNumber extends Fraction {
     public MixedNumber(int whole, int numerator, int denominator) {
-        // Convert to improper fraction immediately for the base class
         super((Math.abs(whole) * denominator + numerator) * (whole < 0 ? -1 : 1), denominator);
     }
 
@@ -25,7 +24,6 @@ public class MixedNumber extends Fraction {
         return sign + whole + "_" + remNum + "/" + denominator;
     }
 
-    // Override to ensure calculations return MixedNumber for the GUI
     @Override
     public Fraction add(Fraction other) { return new MixedNumber(super.add(other)); }
     @Override
