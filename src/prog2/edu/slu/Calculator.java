@@ -5,6 +5,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.EventListener;
 
 public class Calculator extends JFrame implements ActionListener {
 
@@ -76,7 +77,7 @@ public class Calculator extends JFrame implements ActionListener {
                 "7", "8", "9", "DEL", "CA",
                 "4", "5", "6", "x", "÷",
                 "1", "2", "3", "+", "-",
-                "0", ".", "x / y", "Whole (_)", "="
+                "0", ".", "x / y", "A b / c", "="
         };
 
         for (String label : buttonLabels) {
@@ -95,7 +96,6 @@ public class Calculator extends JFrame implements ActionListener {
             } else {
                 btn.setBackground(Color.LIGHT_GRAY);
             }
-
             btn.addActionListener(this);
             pnlButtons.add(btn);
         }
