@@ -9,9 +9,9 @@ import java.awt.event.ActionListener;
 
 public class Calculator extends JFrame implements ActionListener {
 
-    private JLabel lblExpression;
-    private JLabel lblInput;
-    private JLabel lblDoubleResult;
+    private final JLabel lblExpression;
+    private final JLabel lblInput;
+    private final JLabel lblDoubleResult;
 
     private Fraction op1 = null;
     private String currentOperator = "";
@@ -153,27 +153,16 @@ public class Calculator extends JFrame implements ActionListener {
         add(pnlInstructions, BorderLayout.SOUTH);
     }
 
-    class RoundedButton extends JButton {
-        private int radius;
-
-        public RoundedButton(String label, int radius) {
-            super(label);
-            this.radius = radius;
-            setContentAreaFilled(false);
-            setFocusPainted(false);
-            setBorderPainted(false);
-            setOpaque(false);
+    static void main(String[] args) {
+        try {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch (Exception e) {
         }
-
-        @Override
-        protected void paintComponent(Graphics g) {
-            Graphics2D g2 = (Graphics2D) g.create();
-            g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-            g2.setColor(getBackground());
-            g2.fillRoundRect(0, 0, getWidth(), getHeight(), radius, radius);
-            super.paintComponent(g2);
-            g2.dispose();
-        }
+        SwingUtilities.invokeLater(() -> {
+            Calculator calc = new Calculator();
+            calc.setLocationRelativeTo(null);
+            calc.setVisible(true);
+        });
     }
 
     private void setRawInput(String val) {
@@ -393,15 +382,26 @@ public class Calculator extends JFrame implements ActionListener {
         displayAsMixed = false;
     }
 
-    public static void main(String[] args) {
-        try {
-            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        } catch (Exception e) {
+    class RoundedButton extends JButton {
+        private final int radius;
+
+        public RoundedButton(String label, int radius) {
+            super(label);
+            this.radius = radius;
+            setContentAreaFilled(false);
+            setFocusPainted(false);
+            setBorderPainted(false);
+            setOpaque(false);
         }
-        SwingUtilities.invokeLater(() -> {
-            Calculator calc = new Calculator();
-            calc.setLocationRelativeTo(null);
-            calc.setVisible(true);
-        });
+
+        @Override
+        protected void paintComponent(Graphics g) {
+            Graphics2D g2 = (Graphics2D) g.create();
+            g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+            g2.setColor(getBackground());
+            g2.fillRoundRect(0, 0, getWidth(), getHeight(), radius, radius);
+            super.paintComponent(g2);
+            g2.dispose();
+        }
     }
 }
