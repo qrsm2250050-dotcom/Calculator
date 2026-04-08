@@ -57,16 +57,28 @@ public class Fraction {
         return b == 0 ? a : gcd(b, a % b);
     }
 
-    public double toDouble() { return (double) numerator / denominator; }
+    public double toDouble() {
+        return (double) numerator / denominator;
+    }
 
     @Override
     public String toString() {
         return (denominator == 1) ? String.valueOf(numerator) : numerator + "/" + denominator;
     }
 
-    public int getNumerator() { return numerator; }
-    public void setNumerator(int numerator) { this.numerator = numerator; simplify(); }
-    public int getDenominator() { return denominator; }
+    public int getNumerator() {
+        return numerator;
+    }
+
+    public void setNumerator(int numerator) {
+        this.numerator = numerator;
+        simplify();
+    }
+
+    public int getDenominator() {
+        return denominator;
+    }
+
     public void setDenominator(int denominator) {
         if (denominator == 0) throw new ArithmeticException("Division by zero");
         this.denominator = denominator;

@@ -25,11 +25,22 @@ public class MixedNumber extends Fraction {
     }
 
     @Override
-    public Fraction add(Fraction other) { return new MixedNumber(super.add(other)); }
+    public Fraction add(Fraction other) {
+        return new MixedNumber(super.add(other));
+    }
+
     @Override
-    public Fraction subtract(Fraction other) { return new MixedNumber(super.subtract(other)); }
+    public Fraction subtract(Fraction other) {
+        return new MixedNumber(super.subtract(other));
+    }
+
     @Override
-    public Fraction multiplyBy(Fraction other) { return new MixedNumber(super.multiplyBy(other)); }
+    public Fraction multiplyBy(Fraction other) {
+        return new MixedNumber(super.multiplyBy(other));
+    }
+
     @Override
-    public Fraction divideBy(Fraction other) { return new MixedNumber(super.divideBy(other)); }
+    public Fraction divideBy(Fraction other) {
+        return new MixedNumber(super.divideBy(other));
+    }
 }

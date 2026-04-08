@@ -1,6 +1,7 @@
 package prog2.edu.slu;
 
 import prog2.edu.slu.pregroup01.Fraction;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -23,7 +24,7 @@ public class Calculator extends JFrame implements ActionListener {
     private String rawExpression = "";
 
     public Calculator() {
-        setTitle("2-Way Fraction Calculator");
+        setTitle("2-Way Fraction & Mixed Number Calculator");
         setSize(650, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
@@ -155,7 +156,7 @@ public class Calculator extends JFrame implements ActionListener {
     class RoundedButton extends JButton {
         private int radius;
 
-        public RoundedButton(String label, int radius){
+        public RoundedButton(String label, int radius) {
             super(label);
             this.radius = radius;
             setContentAreaFilled(false);
@@ -163,6 +164,7 @@ public class Calculator extends JFrame implements ActionListener {
             setBorderPainted(false);
             setOpaque(false);
         }
+
         @Override
         protected void paintComponent(Graphics g) {
             Graphics2D g2 = (Graphics2D) g.create();
@@ -252,8 +254,7 @@ public class Calculator extends JFrame implements ActionListener {
                 }
                 if (rawInput.equals("0")) setRawInput(cmd);
                 else setRawInput(rawInput + cmd);
-            }
-            else if (cmd.equals("<html>a <sup>b</sup>/<sub>c</sub></html>")) {
+            } else if (cmd.equals("<html>a <sup>b</sup>/<sub>c</sub></html>")) {
                 if (isNewInput) {
                     setRawInput("0");
                     isNewInput = false;
@@ -262,29 +263,27 @@ public class Calculator extends JFrame implements ActionListener {
                 if (!rawInput.contains("_")) {
                     setRawInput(rawInput + "_");
                 }
-            }
-            else if (cmd.equals("<html><sup>d</sup>/<sub>c</sub></html>")) {
-                if (isNewInput) { setRawInput("0"); isNewInput = false; }
+            } else if (cmd.equals("<html><sup>d</sup>/<sub>c</sub></html>")) {
+                if (isNewInput) {
+                    setRawInput("0");
+                    isNewInput = false;
+                }
                 if (!rawInput.contains("/")) setRawInput(rawInput + "/");
-            }
-            else if (cmd.equals(".")) {
-                if(isNewInput) {
+            } else if (cmd.equals(".")) {
+                if (isNewInput) {
                     setRawInput("0.");
                     isNewInput = false;
                 } else if (!rawInput.contains(".")) {
                     setRawInput(rawInput + ".");
                 }
-            }
-            else if (cmd.equals("CA")) {
+            } else if (cmd.equals("CA")) {
                 resetCalculator();
-            }
-            else if (cmd.equals("DEL")) {
+            } else if (cmd.equals("DEL")) {
                 if (rawInput.length() > 0 && !isNewInput) {
                     setRawInput(rawInput.substring(0, rawInput.length() - 1));
                     if (rawInput.isEmpty()) setRawInput("0");
                 }
-            }
-            else if (cmd.equals("+") || cmd.equals("-") || cmd.equals("x") || cmd.equals("÷")) {
+            } else if (cmd.equals("+") || cmd.equals("-") || cmd.equals("x") || cmd.equals("÷")) {
                 if (!rawInput.isEmpty() && !rawInput.contains("Error")) {
                     if (op1 != null && !currentOperator.isEmpty() && !isNewInput) {
                         calculateResult();
@@ -294,8 +293,7 @@ public class Calculator extends JFrame implements ActionListener {
                     setRawExpression(getImproperString(op1) + " " + currentOperator);
                     isNewInput = true;
                 }
-            }
-            else if (cmd.equals("=")) {
+            } else if (cmd.equals("=")) {
                 if (op1 != null && !currentOperator.isEmpty() && !isNewInput) {
                     calculateResult();
                     setRawExpression("");
@@ -303,8 +301,7 @@ public class Calculator extends JFrame implements ActionListener {
                     currentOperator = "";
                     isNewInput = true;
                 }
-            }
-            else if (cmd.equals("<html>a <sup>b</sup>/<sub>c</sub> &#8660; <sup>d</sup>/<sub>c</sub></html>")) {
+            } else if (cmd.equals("<html>a <sup>b</sup>/<sub>c</sub> &#8660; <sup>d</sup>/<sub>c</sub></html>")) {
                 if (currentResult != null || !rawInput.contains("Error")) {
                     if (currentResult == null) currentResult = parseToFraction(rawInput);
                     displayAsMixed = !displayAsMixed;
@@ -324,10 +321,18 @@ public class Calculator extends JFrame implements ActionListener {
         Fraction op2 = parseToFraction(rawInput);
         Fraction result = null;
         switch (currentOperator) {
-            case "+": result = op1.add(op2); break;
-            case "-": result = op1.subtract(op2); break;
-            case "x": result = op1.multiplyBy(op2); break;
-            case "÷": result = op1.divideBy(op2); break;
+            case "+":
+                result = op1.add(op2);
+                break;
+            case "-":
+                result = op1.subtract(op2);
+                break;
+            case "x":
+                result = op1.multiplyBy(op2);
+                break;
+            case "÷":
+                result = op1.divideBy(op2);
+                break;
         }
         if (result != null) {
             currentResult = result;
@@ -351,7 +356,7 @@ public class Calculator extends JFrame implements ActionListener {
     private Fraction parseToFraction(String input) throws Exception {
         input = input.trim();
         if (input.isEmpty() || input.contains("Error")) throw new Exception();
-        if (input.endsWith("_") || input.endsWith("/")) input = input.substring(0, input.length()-1);
+        if (input.endsWith("_") || input.endsWith("/")) input = input.substring(0, input.length() - 1);
 
         if (input.contains("_")) {
             String[] parts = input.split("_");
@@ -371,7 +376,7 @@ public class Calculator extends JFrame implements ActionListener {
             if (fracPart.isEmpty()) fracPart = "0";
             int den = (int) Math.pow(10, fracPart.length());
             long num = Long.parseLong(wholePart) * den + (wholePart.startsWith("-") ? -1 : 1) * Long.parseLong(fracPart);
-            return new Fraction((int)num, den);
+            return new Fraction((int) num, den);
         } else {
             return new Fraction(Integer.parseInt(input), 1);
         }
@@ -389,8 +394,10 @@ public class Calculator extends JFrame implements ActionListener {
     }
 
     public static void main(String[] args) {
-        try { UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName()); }
-        catch (Exception e) { }
+        try {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch (Exception e) {
+        }
         SwingUtilities.invokeLater(() -> {
             Calculator calc = new Calculator();
             calc.setLocationRelativeTo(null);
