@@ -41,7 +41,7 @@ public class Calculator extends JFrame implements ActionListener {
         lblInput = new JLabel(toFractionHtml("0"));
         lblInput.setFont(new Font("SansSerif", Font.BOLD, 32));
         lblInput.setHorizontalAlignment(SwingConstants.RIGHT);
-        lblInput.setBorder(BorderFactory.createEmptyBorder(0, 5, 5, 5));
+        lblInput.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 
         lblDoubleResult = new JLabel("DEC: 0.0");
         lblDoubleResult.setFont(new Font("SansSerif", Font.PLAIN, 12));
@@ -59,7 +59,17 @@ public class Calculator extends JFrame implements ActionListener {
         JPanel pnlBottomDisplay = new JPanel(new BorderLayout());
         pnlBottomDisplay.setBackground(Color.WHITE);
         pnlBottomDisplay.add(lblDoubleResult, BorderLayout.CENTER);
-        pnlBottomDisplay.add(btnSD, BorderLayout.EAST);
+
+        JPanel pnlBtnWrapper = new JPanel(new FlowLayout(FlowLayout.RIGHT, 0, 0));
+        pnlBtnWrapper.setBackground(Color.WHITE);
+        pnlBtnWrapper.setBorder(BorderFactory.createEmptyBorder(0, 10, 5, 5));
+
+        // 0 padding on the right side
+        pnlBtnWrapper.setBorder(BorderFactory.createEmptyBorder(0, 10, 5, 5));
+        pnlBtnWrapper.setBorder(BorderFactory.createEmptyBorder(0, 10, 5, 5));
+        pnlBtnWrapper.add(btnSD);
+
+        pnlBottomDisplay.add(pnlBtnWrapper, BorderLayout.EAST);
 
         pnlDisplay.add(lblExpression, BorderLayout.NORTH);
         pnlDisplay.add(lblInput, BorderLayout.CENTER);
@@ -76,7 +86,7 @@ public class Calculator extends JFrame implements ActionListener {
                 "7", "8", "9", "DEL", "CA",
                 "4", "5", "6", "x", "÷",
                 "1", "2", "3", "+", "-",
-                "0", ".", "x / y", "Whole (_)", "="
+                "0", ".", "<html><sup>d</sup>/<sub>c</sub></html>", "<html>a <sup>b</sup>/<sub>c</sub></html>", "="
         };
 
         for (String label : buttonLabels) {
@@ -101,6 +111,45 @@ public class Calculator extends JFrame implements ActionListener {
         }
 
         add(pnlButtons, BorderLayout.CENTER);
+
+        JPanel pnlInstructions = new JPanel(new BorderLayout());
+        pnlInstructions.setBackground(Color.DARK_GRAY);
+        pnlInstructions.setBorder(BorderFactory.createEmptyBorder(5, 15, 15, 15));
+
+        JButton btnToggle = new JButton("Show basic instructions");
+        btnToggle.setFont(new Font("SansSerif", Font.BOLD, 12));
+        btnToggle.setForeground(Color.LIGHT_GRAY);
+        btnToggle.setFocusPainted(false);
+        btnToggle.setContentAreaFilled(false);
+        btnToggle.setBorderPainted(false);
+        btnToggle.setHorizontalAlignment(SwingConstants.LEFT);
+        btnToggle.setCursor(new Cursor(Cursor.HAND_CURSOR));
+
+        String instructionText = "<html><span style='color: #CCCCCC; font-size: 11px; font-family: SansSerif;'>"
+                + "<b>How to use fractions:</b><br>"
+                + "&bull; <b>Simple Fraction:</b> Type numerator &rarr; <b><sup>d</sup>/<sub>c</sub></b> &rarr; Type denominator (e.g., 3/4)<br>"
+                + "&bull; <b>Mixed Number:</b> Type whole number &rarr; <b>a <sup>b</sup>/<sub>c</sub></b> &rarr; Type numerator &rarr; <b><sup>d</sup>/<sub>c</sub></b> &rarr; Type denominator<br>"
+                + "&bull; Use the top-right button to toggle results between Mixed and Improper fractions."
+                + "</span></html>";
+
+        JLabel lblInstructions = new JLabel(instructionText);
+
+        lblInstructions.setVisible(false);
+
+        btnToggle.addActionListener(e -> {
+            boolean isCurrentlyVisible = lblInstructions.isVisible();
+
+            lblInstructions.setVisible(!isCurrentlyVisible);
+            btnToggle.setText(isCurrentlyVisible ? "Show basic instructions" : "Hide basic instructions");
+
+            pnlInstructions.revalidate();
+            pnlInstructions.repaint();
+        });
+
+        pnlInstructions.add(btnToggle, BorderLayout.NORTH);
+        pnlInstructions.add(lblInstructions, BorderLayout.CENTER);
+
+        add(pnlInstructions, BorderLayout.SOUTH);
     }
 
     class RoundedButton extends JButton {
@@ -143,11 +192,15 @@ public class Calculator extends JFrame implements ActionListener {
             String[] parts = val.split("_");
             String whole = parts[0];
             String fracPart = parts.length > 1 ? parts[1] : "";
+
             if (fracPart.contains("/")) {
                 String[] frac = fracPart.split("/");
                 String num = frac[0];
                 String den = frac.length > 1 ? frac[1] : "";
                 return "<html><table style='font-size:24pt; color:#000000;' cellpadding='0' cellspacing='0'><tr><td rowspan='2' valign='middle'>" + whole + "&nbsp;</td><td align='center' style='border-bottom:2px solid black;'>" + num + "</td></tr><tr><td align='center'>" + den + "</td></tr></table></html>";
+            } else {
+                // NEW: Hide the underscore while they are typing the numerator
+                return "<html><span style='font-size:24pt; color:#000000;'>" + val.replace("_", " ") + "</span></html>";
             }
         } else if (val.contains("/")) {
             String[] frac = val.split("/");
@@ -200,11 +253,17 @@ public class Calculator extends JFrame implements ActionListener {
                 if (rawInput.equals("0")) setRawInput(cmd);
                 else setRawInput(rawInput + cmd);
             }
-            else if (cmd.equals("Whole (_)")) {
-                if (isNewInput) { setRawInput("0"); isNewInput = false; }
-                if (!rawInput.contains("_")) setRawInput(rawInput + "_");
+            else if (cmd.equals("<html>a <sup>b</sup>/<sub>c</sub></html>")) {
+                if (isNewInput) {
+                    setRawInput("0");
+                    isNewInput = false;
+                }
+
+                if (!rawInput.contains("_")) {
+                    setRawInput(rawInput + "_");
+                }
             }
-            else if (cmd.equals("x / y")) {
+            else if (cmd.equals("<html><sup>d</sup>/<sub>c</sub></html>")) {
                 if (isNewInput) { setRawInput("0"); isNewInput = false; }
                 if (!rawInput.contains("/")) setRawInput(rawInput + "/");
             }
