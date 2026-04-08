@@ -37,3 +37,5 @@ The project is organized into the following components:
 * **Integer Overflow:** The calculator uses standard 32-bit `int` types for numerators and denominators, as required by the project guidelines. Extremely large products or denominators may result in integer overflow.
 * **Decimal-to-Fraction Precision:** The `parseToFraction` logic converts decimals based on the number of trailing digits (e.g., `0.33` becomes `33/100`). It does not currently detect or convert repeating decimals (like $0.33\dots$ to $1/3$).
 * **Fixed Window Size:** The GUI is set to a fixed size of $650 \times 600$ pixels and is not fully responsive to aggressive resizing.
+
+GitHub repository link: https://github.com/qrsm2250050-dotcom/Calculator
