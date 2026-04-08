@@ -127,7 +127,7 @@ public class Calculator extends JFrame implements ActionListener {
         btnToggle.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
         String instructionText = "<html><span style='color: #CCCCCC; font-size: 11px; font-family: SansSerif;'>"
-                + "<b>How to use fractions:</b><br>"
+                + "<b>How to use:</b><br>"
                 + "&bull; <b>Simple Fraction:</b> Type numerator &rarr; <b><sup>d</sup>/<sub>c</sub></b> &rarr; Type denominator (e.g., 3/4)<br>"
                 + "&bull; <b>Mixed Number:</b> Type whole number &rarr; <b>a <sup>b</sup>/<sub>c</sub></b> &rarr; Type numerator &rarr; <b><sup>d</sup>/<sub>c</sub></b> &rarr; Type denominator<br>"
                 + "&bull; Use the top-right button to toggle results between Mixed and Improper fractions."
