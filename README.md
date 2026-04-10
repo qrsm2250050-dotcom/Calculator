@@ -41,3 +41,5 @@ The project is organized into the following components:
 ---
 
 GitHub repository link: https://github.com/qrsm2250050-dotcom/Calculator
+
+Anyone is allowed to create a fork of this.
